@@ -30,8 +30,8 @@ def basic_stats(selected_user, df):
     return user_df['message'].shape[0], len(words), num_media, len(urls)
 
 def msg_per_user(df):
-    return df['user'].value_counts().head()
+    return df['user'].value_counts().head().reset_index().rename(columns={'index':'user', 'user':'total_msgs'})
 
 def inter_stats(df):
-    mpu = msg_per_user(df)
+    mpu =msg_per_user(df)
     return mpu
