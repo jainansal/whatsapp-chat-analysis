@@ -1,4 +1,5 @@
 from urlextract import URLExtract
+import emoji
 extractor = URLExtract()
 
 def fetch_words(df):
@@ -35,3 +36,30 @@ def msg_per_user(df):
 def inter_stats(df):
     mpu =msg_per_user(df)
     return mpu
+
+def okay(s):
+    for c in s:
+        if c.lower() < 'a' or c.lower() > 'z':
+            return False
+    return True 
+    
+
+def common(df):
+    temp = df[df['user'] != 'group_notification']
+    temp = temp[temp['message'] != '<Media omitted>\n']
+    f = open('stop_words.txt','r')
+    stop = f.read()
+    words = []
+    for message in temp['message']:
+        for word in message.lower().split():
+            if word not in stop and okay(word):
+                words.append(word)
+
+    return words
+
+def emojis(df):
+    emojis=[]
+    for message in df['message']:
+        emojis.extend([c for c in message if emoji.is_emoji(c)])
+
+    return emojis

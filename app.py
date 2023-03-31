@@ -4,6 +4,7 @@ import pandas as pd
 import preprocessor
 import helper
 import matplotlib.pyplot as plt
+from collections import Counter
 
 # Sidebar
 st.sidebar.title("Whatsapp Chat Analyzer")
@@ -27,7 +28,8 @@ if uploaded_file is not None:
 
     # fetch unique users
     user_list = df['user'].unique().tolist()
-    user_list.remove('group_notification')
+    if 'group_notification' in user_list:
+        user_list.remove('group_notification')
     user_list.sort()
     user_list.insert(0,"Overall")
 
@@ -82,6 +84,35 @@ if uploaded_file is not None:
 
 
         
-        # Wordcloud
+        # Most common words
+        cur_df = df.copy()
+        if selected_user != 'Overall':
+            cur_df = df[df['user'] == selected_user]
 
+        common_words = helper.common(cur_df)
+        final_df = pd.DataFrame(Counter(common_words).most_common(20), columns=['word','occurence'])
+
+        fig, ax = plt.subplots()
+
+        ax.barh(final_df['word'], final_df['occurence'])
+        plt.xticks(rotation='vertical')
+
+        st.title('Most Common Words')
+        st.pyplot(fig)
+        
+
+        # Emoji analysis
+
+        st.title('Emoji analysis')
+        col1, col2 = st.columns(2)
+        emojis = helper.emojis(cur_df)
+        emoji_df = pd.DataFrame(Counter(emojis).most_common(len(Counter(emojis))))
+
+        with col1:
+            st.dataframe(emoji_df)
+        with col2:
+            emoji_df = emoji_df[:5]
+            fig,ax=plt.subplots()
+            ax.pie(emoji_df[1], labels=emoji_df[0], autopct='%0.2f')
+            st.pyplot(fig)
         
