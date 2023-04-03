@@ -63,3 +63,31 @@ def emojis(df):
         emojis.extend([c for c in message if emoji.is_emoji(c)])
 
     return emojis
+
+def timeline(df):
+    mydf = df.copy()
+    mydf['month_num'] = mydf['date'].dt.month
+    timeline = mydf.groupby(['year','month_num','month']).count()['message'].reset_index()
+    time = []
+    for i in range(timeline.shape[0]):
+        time.append(timeline['month'][i] + '-' + str(timeline['year'][i]))
+    timeline['time'] = time
+    return timeline
+
+def daily_timeline(df):
+    mydf = df.copy()
+    mydf['only_date'] = mydf['date'].dt.date
+    daily_timeline = mydf.groupby('only_date').count()['message'].reset_index()
+    return daily_timeline
+
+def daywise(df):
+    df['day_name'] = df['date'].dt.day_name()
+    return df['day_name'].value_counts().reset_index()
+
+def monthwise(df):
+    df['month_name'] = df['date'].dt.month_name()
+    return df['month_name'].value_counts().reset_index()
+
+def heatmap(df):
+    hmap = df.pivot_table(index='day_name',columns='period',values='message', aggfunc='count').fillna(0)
+    return hmap

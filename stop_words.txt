@@ -10,6 +10,14 @@ aaye
 ab
 abbe
 abbey
+wanted
+kra
+uski
+yaar
+uske
+usme
+wanna
+uska
 abe
 abhi
 able
@@ -54,6 +62,7 @@ another
 any
 anybody
 anyhow
+hmmm
 anyone
 anything
 anyway
@@ -81,6 +90,8 @@ at
 aur
 avum
 aya
+coz
+cuz
 aye
 baad
 baar
@@ -1034,3 +1045,12 @@ yourself
 yourselves
 you've
 yup
+mtlb
+mt
+achha
+lagg
+hoon
+arey
+laga
+bass
+

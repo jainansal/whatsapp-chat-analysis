@@ -1,5 +1,6 @@
 # Libraries import
 import streamlit as st
+import seaborn as sns
 import pandas as pd
 import preprocessor
 import helper
@@ -23,7 +24,7 @@ if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
     data = bytes_data.decode("utf-8")
     df = preprocessor.preprocess(data)
-    st.dataframe(df)
+    # st.dataframe(df)
 
 
     # fetch unique users
@@ -42,7 +43,7 @@ if uploaded_file is not None:
         # Fetching basic stats
         num_messages, num_words, num_media, num_urls = helper.basic_stats(selected_user,df)
         # most_busy = helper.inter_stats(df)
-
+        st.title("Top Statistics")
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.header("Total Messages")
@@ -58,8 +59,57 @@ if uploaded_file is not None:
             st.title(num_urls)
 
 
+        cur_df = df.copy()
+        if selected_user != 'Overall':
+            cur_df = df[df['user'] == selected_user]
 
+
+        # Timeline analysis
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.title("Monthly timeline")
+            timeline = helper.timeline(cur_df)
+
+            fig,ax = plt.subplots()
+            ax.plot(timeline['time'], timeline['message'], color='g')
+            plt.xticks(rotation='vertical')
+            st.pyplot(fig)
         
+        with col2:
+            st.title("Daily timeline")
+            daily_timeline = helper.daily_timeline(cur_df)
+            fig,ax = plt.subplots()
+            ax.plot(daily_timeline['only_date'], daily_timeline['message'], color='black')
+            plt.xticks(rotation='vertical')
+            st.pyplot(fig)
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.title("Most Busy day")
+            daywise = helper.daywise(cur_df)
+            fig, ax = plt.subplots()
+            ax.bar(daywise['index'], daywise['day_name'])
+            plt.xticks(rotation='vertical')
+            st.pyplot(fig)
+
+        with col2:
+            st.title("Most Busy Month")
+            monthwise = helper.monthwise(cur_df)
+            fig,ax = plt.subplots()
+            ax.bar(monthwise['index'], monthwise['month_name'], color='y')
+            plt.xticks(rotation='vertical')
+            st.pyplot(fig)
+
+        st.title("Weekly Activity Map")
+        hmap = helper.heatmap(cur_df)
+        fig,ax = plt.subplots()
+        ax = sns.heatmap(hmap)
+        st.pyplot(fig)
+
+
         # Intermediate stats
         if selected_user == 'Overall':
 
@@ -85,9 +135,7 @@ if uploaded_file is not None:
 
         
         # Most common words
-        cur_df = df.copy()
-        if selected_user != 'Overall':
-            cur_df = df[df['user'] == selected_user]
+        
 
         common_words = helper.common(cur_df)
         final_df = pd.DataFrame(Counter(common_words).most_common(20), columns=['word','occurence'])
@@ -115,4 +163,5 @@ if uploaded_file is not None:
             fig,ax=plt.subplots()
             ax.pie(emoji_df[1], labels=emoji_df[0], autopct='%0.2f')
             st.pyplot(fig)
+        
         
