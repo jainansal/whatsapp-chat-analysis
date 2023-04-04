@@ -17,11 +17,6 @@ def preprocess(data):
         final.append(dateparser.parse(s))
     df['message_date'] = final
 
-    if df['message_date'][0][8] == ',':
-        df['message_date'] = pd.to_datetime(df['message_date'], format = '%d/%m/%y, %H:%M - ')
-    else:
-        df['message_date'] = pd.to_datetime(df['message_date'], format = '%d/%m/%Y, %H:%M - ')
-
     df.rename(columns={'message_date': 'date'}, inplace=True)
 
     pattern = '([\w\W]+?):\s'
