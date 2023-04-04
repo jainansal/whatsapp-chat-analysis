@@ -1,6 +1,6 @@
 import re
 import pandas as pd
-from dateparser import parse
+import dateparser
 
 def preprocess(data):
     pattern = '\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s-\s'
@@ -14,7 +14,7 @@ def preprocess(data):
     df.drop(columns={'message_date'})
     final = []
     for s in toParse:
-        final.append(parse(s))
+        final.append(dateparser.parse(s))
     df['message_date'] = final
 
     if df['message_date'][0][8] == ',':
