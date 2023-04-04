@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from collections import Counter
 
 # Sidebar
+st.sidebar.text("(Supports 24 hour format chat backup only)")
+
 st.sidebar.title("Whatsapp Chat Analyzer")
 
 
