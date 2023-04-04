@@ -10,6 +10,8 @@ aaye
 ab
 abbe
 abbey
+deleted
+message
 wanted
 kra
 uski
